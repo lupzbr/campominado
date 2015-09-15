@@ -1,0 +1,523 @@
+package campo;
+
+import java.util.Scanner;
+import java.util.Random;
+public class campooficial {
+   
+	private static Scanner imput;
+    
+	//* Zera o campo inteiro, por que? , quando estava sorteando novamente estava
+	//* Preenchendo em todo o arrey o valor de -1 == a bomba
+	public static void zerar (int [][]campo){
+    	for (int i = 0; i < campo.length; i++){
+    		for (int z = 0 ; z < campo[i].length; z++){
+    			campo[i][z] = 0;
+    		}
+    	}
+    }
+	
+	
+	//* Esse metodo faz o teste para saber se o jogador ganhou o jogo
+	
+    public static boolean ganhar (String [][] campov, int cont){
+        boolean ganhou = false;
+        int espaco = 0;
+        for (int i = 0; i < campov.length; i++) {
+            for (int z = 0; z < campov[i].length; z++) {
+                if (campov[i][z] != " -" && campov[i][z] != " B" && campov[i][z] != " ?"){
+                    cont--;
+                    
+                    // O for corre todo o array virtual buscando as Strings que permitem continuar o jogo
+                    // ele conta todos os espa�os do array e a medida que as Strings de jogo v�o acabando
+                    // o jogador esta mais perto de concluir o jogo
+                }
+            }
+            
+        }
+        if(espaco == cont){
+        	// caso o cont seja igual a espa�o o jogador ganha o jogo
+        	imprimirv (campov);
+            ganhou = true;
+        }else{
+        	
+        	// se n�o ele continua a jogar
+            ganhou = false;
+        }
+        
+        // O metodo retorna se � verdadeiro ou falso a vitoria
+        return ganhou;
+    }
+    
+    
+    // O metodo verifica se o jogador perdeu o jogo
+    public static void perder (int [][]campo, String [][] campov , int tamanho){
+        int num2;
+        
+        // o for corre o arrey 
+           for (int i = 1 ; i < (campo.length)-1 ; i++){
+               for (int z = 1; z < (campo[i].length) -1; z++){
+                   num2 = campo [i][z]; // a variavel num2 recebe o valor do campo matematico
+                   if (num2 >= 0){
+                        campov [i][z] = " " + Integer.toString(num2); // se ele for maior ou igual a 0 ele imprime
+                        											 // espa�o + o valor que est� dentro da posi��o
+                        											// linha e coluna
+                    }else if (num2 == -1){
+                       campov [i][z] = " *";  // caso seja -1 o jogador perde
+                   }  
+                }
+               
+            }
+            desenharguias (campov,campo, tamanho); // desenha as guias novamente
+            imprimirv (campov); // imprime o campo
+            System.out.println (); // da um espa�o
+        
+        
+        System.out.println ("BUUUUUMMMMMMMMMMMMMMMMMMMMM");
+        System.out.println ("Voc� perdeu tente outra vez");
+        
+        
+        
+        
+    }
+    
+    
+    // Este metodo sorteia as bombas
+    
+    
+    public static void sortear (int bomb,int quant, int maxta, int [][] campo){
+       Random bomba = new Random(); 
+       int p1 = 0, p2 = 0;
+       maxta -= 1; // maxta significa tamanho maximo - 1,
+       			  // -1 porque o campo esta maior por causa das guias
+       
+       for(int i = 0 ; i < bomb; i++){ // O for corre o array 
+               do{
+               p1 = bomba.nextInt(maxta); // sorteia a cordenada posi��o 1
+               p2 = bomba.nextInt(maxta); // sorteia a cordenada posi��o 2
+               }while(p1 == 0 || p2 == 0 || campo [p1][p2] == -1 ); // caso ja tenha sido 
+               // sorteado a posi��o da bomba ele volta e sorteia novamente
+               campo [p1][p2] = -1; // insere -1 no lugar da bomba
+        }
+    }
+    
+    // Este array desenha o compo
+    public static void desenhar (String [][] campo, int maxli){
+    	
+    	// insere no campo todo " -"
+       for (int i = 0 ; i < campo.length; i++){
+           for (int z = 0 ; z < campo[i].length ; z++){
+               campo [i][z] = " -";
+           }
+       }
+   }
+    
+    // desenha a borda do campo matematico para n�o ser utilizada
+   public static void lateraismatematico (int [][] campo, int max){
+        
+        for(int i = 0 ; i < campo.length; i++){
+            	campo [i][0] = -10;
+            }
+
+        for (int i = 0 ; i < campo.length; i++){
+            	campo [0][i] = -10;
+            }
+            
+        for (int i = 0 ; i < campo.length; i++){
+        	campo [i][max-1] = -10;
+        }
+        for (int i = 0 ; i < campo.length; i++){
+            	campo [max-1][i] = -10;
+        }
+    }
+  
+   	// desenha as guias do campo virtual
+    public static void desenharguias (String [][] campov,int [][] campo, int max){
+    	lateraismatematico (campo, max);
+       for(int i = 0 ; i < campov.length; i++){
+           if (i<10){
+        	   campov [i][0] = " " + Integer.toString(i);
+           }else{
+        	   campov [i][0] = Integer.toString(i);
+           }
+           
+       }
+       for (int i = 0 ; i < campov.length; i++){
+           if(i<10){
+        	   campov [0][i] = " " + Integer.toString(i);
+               
+           }else{
+        	   campov [0][i] = Integer.toString(i);
+           }
+           
+       }
+       for (int i = 0 ; i < campov.length; i++){
+    	   campov [i][max-1] = Integer.toString(i);
+       }
+       for (int i = 0 ; i < campov.length; i++){
+           if (i<10){
+        	   campov [max-1][i] = " " + Integer.toString(i);
+           }else{
+        	   campov [max-1][i] = Integer.toString(i);
+           }
+           
+       }
+       
+       campov [max-1][max-1] = "0";
+       
+   }
+    // imprimir arrays do tipo int
+    public static void imprimir (int [][] numeros){
+        System.out.println();
+        for (int i = 0 ; i < numeros.length ; i++){
+            System.out.println();
+            for (int z = 0 ; z < numeros[i].length ; z++){
+            System.out.print ("  " + numeros[i][z]);
+            }
+            
+        }
+    }
+    // imprimir arrays do tipo String
+    public static void imprimirv (String [][] numeros){
+        System.out.println();
+        for (int i = 0 ; i < numeros.length ; i++){
+            System.out.println();
+            for (int z = 0 ; z < numeros[i].length ; z++){
+            System.out.print ("  " + numeros[i][z]);
+            }
+            
+        }
+    }
+    
+    // Corre o arrey pra buscar as bombas
+    public static void blaterais (int [][] campo){
+        int lat = 0;
+        for (int i = 1 ; i < (campo.length) -1 ; i++){
+            for (int z = 1; z < (campo[i].length)-1; z++){
+                if (campo[i][z] == 0){
+                    lat = vlaterais (campo, i, z); 
+                    campo [i][z] = lat;
+                    lat = 0;
+                }
+            }
+        }
+    }
+    
+    // localiza insere o valor das laterais que n�o tem bomba
+    public static int vlaterais (int [][] campo, int linha , int coluna){
+        int num = 0;
+        
+        for (int i = -1; i < 2; i++){
+            for (int z = -1 ; z < 2 ; z++){
+                if (campo[linha+z][coluna+i] == -1){
+                    num++;
+                }
+        
+            }
+        }
+        return num; 
+    } 
+    
+
+    // Preencher � o 2� metodo principal que vai mostrar espa�as vazios e preencher os espa�os 
+    // das laterais
+    
+    public static void preencherv (int [][]campo, String [][] campov, int li, int col, int tamanho) {
+       int num = 0;
+       num = campo [li][col];
+       
+       // caso o valor for igual a zero ele expande 
+       if (num == 0){
+    	expandir (campo, campov, li, col);
+    	desenharguias (campov, campo, tamanho);  
+       }
+       
+       // caso for maior que 0 ele imprime o valor que esta la
+       if(num > 0){
+           campov [li][col] = " " + Integer.toString(num);
+           desenharguias (campov, campo, tamanho);  
+       }    
+    }         
+    
+    public static void jogar(){
+    	imput = new Scanner ( System.in );
+        int tamanho = 0, bomb = 0, li= 0 , col = 0, cont=0, num=0, jogada=0;
+        String oper = "0";
+        boolean jogo = true;
+        boolean selecao = true;
+         
+        // Inserir a quantidade de colunas do campo minado //
+        
+        System.out.println("Insira o tamanho quadrado do Campo Minado entre 10 e 35");
+        do{
+            tamanho = imput.nextInt();
+            if (tamanho < 10 || tamanho > 35){
+                System.out.println ("Valor invalido insira um valor entre 10 e 35");
+            }
+        }while(tamanho < 10 || tamanho > 35);
+        
+        // Inserir a quantidade de bombas //
+        
+        int bombalegal = 0;
+        bombalegal = (tamanho * tamanho)-10;
+        System.out.printf ("Insira a quantidade de bombas que deseja entre 1 e %d \n", bombalegal);
+        do {
+            bomb = imput.nextInt();
+            if (bomb < 0 || bomb > bombalegal || bomb == 0 ){
+                System.out.printf ("Valor invalido insira um valor entre 1 e %d \n", bombalegal);
+            }
+        }while(bomb < 0 || bomb > bombalegal || bomb == 0);
+        
+        // Adicionar espa�o para localiza��o
+        
+        tamanho += 2; 
+        cont = (tamanho*tamanho)-bomb; // cont == quantidade de espa�os
+        
+        int [][] campo = new int [tamanho][tamanho];  // arry para campo matematico
+        int bombas = bomb; // arrey para localiza��o de bombas
+        String [][] campov = new String [tamanho][tamanho]; // arrey campo virtual]
+        
+        sortear (bombas, bomb, tamanho, campo); //Sorteia as bombas
+        blaterais (campo);//Inserir laterais dentro do campo
+        desenhar (campov, tamanho);//Desenha o campo virtual
+        desenharguias (campov, campo, tamanho);//Desenha bordas do campo virtual
+        
+       
+        //*** INICIO DO JOGO ***//
+        System.out.println ();
+        System.out.println ("Seja bem vindo");
+        do{
+        	System.out.println ("Jogada " + jogada);
+        	imprimirv (campov); //Imprime campo virtual
+            
+            // Seleciona a linha que sera aberta
+            System.out.println ();  
+            do{
+                System.out.println ("Insira o numero da LINHA maior que 0 e menor que "+ (tamanho-2));
+                li = imput.nextInt();
+                
+                if(li > tamanho-2 || li <= 0){
+                   System.out.println ("LINHA n�o exite");
+                   }
+                
+            }while(li < 0 || li > tamanho-2 || li == 0);
+            
+        
+        
+        
+        // Seleciona a coluna que sera aberta
+        
+        
+            do{
+                System.out.println ("Insira o numero da COLUNA maior que 0 e menor que "+ (tamanho-2));
+                col = imput.nextInt();
+                if(col > tamanho-2 || col <= 0){
+                    System.out.println ("COLUNA n�o exite");
+                }
+               
+            }while((col < 0 || col == 0 || col > tamanho-2));
+
+                jogada++;
+            
+            
+                do{
+                
+                System.out.println("Qual a opera��o deseja?");
+                System.out.println("'v' Para abrir e visualizar o local no campo.");
+                System.out.println("'b' Para informar que ha uma bomba no local do campo.");
+                System.out.println("'?' Para informar que n�o tem certeza se tem ou n�o bomba");
+                System.out.println("'s' Para sair do jogo");
+                oper = imput.next();
+            
+                switch(oper){
+                    case "v": case "V":
+                        
+                        if(campo [li][col] > -1 && jogada > 1){
+                            preencherv (campo, campov, li+1, col+1, tamanho);
+                            selecao = true;
+                        }
+                        
+                        
+                        if (campo [li][col] == -1 && jogada == 1){
+                            do{
+                            	zerar (campo);
+                                sortear (bombas, bomb, tamanho, campo); //Sorteia as bombas
+                                blaterais (campo);//Inserir laterais dentro do campo
+                            }while(campo [li][col] == -1);  
+                        }
+
+                        if (campo [li][col] == -1 && jogada > 1 ){
+                            perder(campo, campov, tamanho);
+                            num = 1;
+                            break;  
+                        }
+                        
+                        preencherv (campo, campov, li, col, tamanho);
+                        selecao = true;
+                        
+                        break;
+                    
+                    case "b": case "B":
+                        campov[li][col] = " B";
+                        selecao = true;
+                        break;
+                
+                    case "?":
+                        campov[li][col] = " ?";
+                        selecao = true;
+                        break;  
+                        
+                    case "s": case "S":
+                    	num = 1;
+                    	System.out.println ("At� a proxima");
+                        selecao = true;
+                        
+                        break;  
+                    default:
+                        
+                    System.out.println ("Comando invalido");
+                    selecao = false;
+                }  
+            }while(selecao == false);
+
+            jogo = ganhar(campov, cont);
+
+            if (jogo == true){
+            	System.out.println ();
+            	System.out.println ();
+                System.out.println ("PARABENS");
+                System.out.println ();
+                System.out.println ("Voc� ganhou o jogo!!!!");  
+                System.out.println ();
+                System.out.printf ("Voc� jogou um campo \n Tamanho %d, \n %d Bombas, \n E resolveu em %d Jogadas", tamanho-2, bomb, jogada);
+                num = 2;	
+                }
+            
+            if (num == 1 || num == 2){
+                break;
+            }      
+            // *** FIM DO JOGO ***///
+        }while(num == 0);
+    }
+      
+    public static void main (String [] args){
+    	int oper = 1;
+    	while (oper == 1){
+    		jogar();
+    		System.out.println();
+    		System.out.println ("Deseja jogar novamente? \n Precione '1' para sim e '2' para n�o");
+    		oper = imput.nextInt();
+    		if (oper != 1){
+    			System.out.println("At� a proxima!");
+    			break;
+    		}
+    	}	        
+    }
+    
+    
+    
+    
+    //  EXPA��O COM RECURSIVIDADE
+    // Recurs�o principal
+    public static void expandir(int array[][] , String [][] arrys, int li, int col){
+		int tam=array.length;
+		if (li+1<=tam && col+1<=tam) {          
+			if ( array[li][col] == 0 ){ // Caso o valor seja 0
+				arrys [li][col] = "  "; // Insere no campo virtual espa�o
+				expandir(array,arrys,li,col+1); // Expande para a direira col +1
+				expesq(array,arrys,li,col); // Ap�s expandir para direita expande para a esquerda
+				expabx(array,arrys,li,col); // Ap�s expandir para baixo
+				expabx(array,arrys,li,col+1); // Ap�s expandir para baixo simples expandi uma casa para a direita
+				expabx(array,arrys,li,col-1); // Ap�s expandir para baixo simples expandi uma casa para a esquerda
+				expacm(array,arrys,li,col); // Ap�s expandir para a direita e para a esquerda ele expande para cima
+				expacm(array,arrys,li,col-1); // Ap�s expandir para a direita simples expadi uma casa para a esquerda
+				expacm(array,arrys,li,col+1); // Ap�s expandir para a direita simples expadi uma casa para a direita
+			}else if (array[li][col] > 0){ // caso o valor seja maior que 0
+				int num = array[li][col]; // a variavel temporaria num recebe o valor que esta la
+				arrys [li][col] = " "+ Integer.toString(num); // depois insere no lugar para informar quantas bombas tem na lateral
+				}
+			}
+		
+		}
+    
+    	// Expande para a esquerda e chama todas
+		public static void expesq(int array2[][] , String [][] arrys2, int li2, int col2){
+		int tam=array2.length;
+		if (li2>=0 && col2>=0 && li2+1<=tam && col2+1<=tam) {   
+			if ( array2[li2][col2] == 0 ){
+				array2[li2][col2] = -2;	
+				arrys2 [li2][col2] = "  ";
+				expesq(array2,arrys2,li2,col2);
+				expesq(array2,arrys2,li2,col2+1);
+				expesq(array2,arrys2,li2,col2-1);
+				expabx(array2,arrys2,li2,col2);
+				expabx(array2,arrys2,li2,col2-1);
+				expabx(array2,arrys2,li2,col2+1);
+				expacm(array2,arrys2,li2,col2);
+				expacm(array2,arrys2,li2,col2-1);
+				expacm(array2,arrys2,li2,col2+1);
+				expandir(array2,arrys2,li2,col2);
+				expandir(array2,arrys2,li2,col2+1);
+				expandir(array2,arrys2,li2,col2-1);
+			}else if (array2[li2][col2] > 0){
+				int num = array2[li2][col2];
+				arrys2 [li2][col2] = " "+ Integer.toString(num);
+			}
+		}
+		
+		}
+		
+		// Expande para baixo e chama todas
+		public static void expabx(int array3[][] , String [][] arrys3, int li3, int col3){
+		li3++;
+		int tam=array3.length;
+		if (li3>=0 && col3>=0 && li3+1<=tam && col3+1<=tam) {  
+			if ( array3[li3][col3] == 0 ){
+				array3[li3][col3]  = -2;	
+				arrys3 [li3][col3] = "  ";
+				expabx(array3,arrys3,li3,col3);
+				expabx(array3,arrys3,li3,col3+1);
+				expabx(array3,arrys3,li3,col3-1);
+				expacm(array3,arrys3,li3,col3);
+				expacm(array3,arrys3,li3,col3+1);
+				expacm(array3,arrys3,li3,col3-1);
+				expesq(array3,arrys3,li3,col3);
+				expesq(array3,arrys3,li3,col3+1);
+				expesq(array3,arrys3,li3,col3-1);
+				expandir(array3,arrys3,li3,col3);
+				expandir(array3,arrys3,li3,col3+1);
+				expandir(array3,arrys3,li3,col3-1);
+			}else if (array3[li3][col3] > 0){
+				int num = array3[li3][col3];
+				arrys3 [li3][col3] = " "+ Integer.toString(num);
+				}
+			}
+		
+		}
+		
+		// Faz Expans�o para cima e chama todas
+		public static void expacm(int array4[][] , String [][] arrys4, int li4, int col4){
+		li4--;
+		int tam=array4.length;
+		if (li4>=0 && col4>=0 && li4+1<=tam && col4+1<=tam) {
+			if ( array4[li4][col4] == 0 ){
+				array4[li4][col4] = -2;
+				arrys4 [li4][col4] = "  ";
+				expacm(array4,arrys4, li4,col4);
+				expacm(array4,arrys4,li4,col4+1);
+				expacm(array4,arrys4,li4,col4-1);
+				expesq(array4,arrys4,li4,col4);
+				expesq(array4,arrys4,li4,col4+1);
+				expesq(array4,arrys4,li4,col4-1);
+				expabx(array4,arrys4,li4,col4);
+				expabx(array4,arrys4,li4,col4+1);
+				expabx(array4,arrys4,li4,col4-1);
+				expandir(array4,arrys4,li4,col4);
+				expandir(array4,arrys4,li4,col4+1);
+				expandir(array4,arrys4,li4,col4-1);
+			}else if (array4[li4][col4] > 0){
+				int num = array4[li4][col4];
+				arrys4 [li4][col4] = " "+ Integer.toString(num);
+			}
+		}	
+	}
+}
